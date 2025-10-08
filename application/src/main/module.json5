@@ -1,0 +1,48 @@
+{
+  "module": {
+    "name": "application",
+    "type": "feature",
+    "description": "$string:module_desc",
+    "mainElement": "HiWearMainAbility",
+    "deviceTypes": [
+      "wearable"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "HiWearMainAbility",
+        "srcEntry": "./ets/hiwearmainability/HiWearMainAbility.ets",
+        "description": "$string:HiWearMainAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:HiWearMainAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.READ_HEALTH_DATA",
+        "reason": "$string:READ_HEALTH_DATA",
+        "usedScene": {
+          "abilities": [
+            "HiWearMainAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        "name": "ohos.permission.INTERNET",
+        "reason": "$string:internet"
+      }
+    ],
+    "metadata": [
+      {
+        "name": "wearEngineRemoteAppNameList",
+        "value": "YOUR_PHONE_APP_BUNDLE_NAME"
+      }
+    ]
+  }
+}

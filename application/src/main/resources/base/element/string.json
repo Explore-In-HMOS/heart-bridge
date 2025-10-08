@@ -1,0 +1,60 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "HiWearMainAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "HiWearMainAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "button_send_message",
+      "value": "Send Message Phone"
+    },
+    {
+      "name": "button_send_file",
+      "value": "Send File to Phone"
+    },
+    {
+      "name": "text_received_log",
+      "value": "Received log: "
+    },
+    {
+      "name": "page_title",
+      "value": "Wear Engine Message Next Wearable to Mobile Message & File Sample"
+    },
+    {
+      "name": "READ_HEALTH_DATA",
+      "value": "ohos.permission.READ_HEALTH_DATA"
+    },
+    {
+      "name": "hr",
+      "value": "Heart Rate:"
+    },
+    {
+      "name": "internet",
+      "value": "internet"
+    },
+    {
+      "name": "calories",
+      "value": "Calories"
+    },
+    {
+      "name": "access_token",
+      "value": "Access Token is:"
+    },
+    {
+      "name": "loading",
+      "value": "Loading..."
+    },
+    {
+      "name": "no_calorie",
+      "value": "No calorie data available."
+    }
+  ]
+}
