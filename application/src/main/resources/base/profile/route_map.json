@@ -1,0 +1,19 @@
+{
+  "routerMap": [
+    {
+      "name": "SendToPhone",
+      "pageSourceFile": "src/main/ets/pages/SendToPhone.ets",
+      "buildFunction": "SendToPhoneBuilder"
+    },
+    {
+      "name": "AuthenticationPage",
+      "pageSourceFile": "src/main/ets/pages/AuthenticationPage.ets",
+      "buildFunction": "AuthenticationPageBuilder"
+    },
+    {
+      "name": "CaloriesPage",
+      "pageSourceFile": "src/main/ets/pages/CaloriesPage.ets",
+      "buildFunction": "CaloriesPageBuilder"
+    }
+  ]
+}

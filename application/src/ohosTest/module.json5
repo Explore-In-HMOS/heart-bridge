@@ -1,7 +1,7 @@
 {
   "module": {
     "name": "application_test",
-    "type": "feature",
+    "type": "entry",
     "deviceTypes": [
       "wearable"
     ],

@@ -1,17 +1,24 @@
 import { webview } from '@kit.ArkWeb';
-import { router } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { AuthenticationViewModel } from '../viewmodel/AuthenticationViewModel';
 import Constants from '../utils/Constants';
+import { TokenResponse } from '../model/TokenResponse';
+
+@Builder
+export function AuthenticationPageBuilder() {
+  AuthenticationPage()
+}
 
 @Entry
 @Component
-export struct Authentication {
+struct AuthenticationPage {
+
   @State shouldShowWebView: boolean = true;
   @State accessToken: string = '';
   @State activationKey: string = '';
   controller: webview.WebviewController = new webview.WebviewController();
   private viewModel = new AuthenticationViewModel();
+  @Consume('mainStack') pathStack: NavPathStack;
 
   aboutToAppear(): void {
     const storedToken = this.viewModel.getAccessTokenFromStorage();
@@ -35,50 +42,57 @@ export struct Authentication {
   }
 
   build() {
-    Column() {
-      if (this.shouldShowWebView) {
-        Web({ src: Constants.AUTH_URL, controller: this.controller })
-          .width('100%')
-          .height('100%')
-          .onLoadIntercept((event) => {
-            if (event) {
-              const url = event.data.getRequestUrl();
-              console.log('URL:' + url);
-              const code = this.viewModel.getQueryParameter(url, 'code');
-              if (code) {
-                console.info('Code received from redirect: ' + code);
-                this.handleOAuthCode(code);
-              }
-            }
-            return false;
-          });
-      } else {
-        Column() {
-          Text($r('app.string.access_token'))
-            .fontSize(14)
-            .height('20%')
-            .width('100%')
-            .fontWeight(FontWeight.Bold)
-            .textAlign(TextAlign.Center);
+    NavDestination() {
 
-          Text(this.accessToken)
-            .fontSize(12)
-            .height('30%')
+      Column() {
+
+        if (this.shouldShowWebView) {
+          Web({ src: Constants.AUTH_URL, controller: this.controller })
             .width('100%')
-            .fontColor(Color.Red)
-            .onClick(() => {
-              router.pushUrl({
-                url: 'pages/CaloriesPage',
-                params: { access_token: this.accessToken }
-              });
+            .height('100%')
+            .onLoadIntercept((event) => {
+              if (event) {
+                const url = event.data.getRequestUrl();
+                console.info(`URL: ${url}`);
+                const code = this.viewModel.getQueryParameter(url, 'code');
+                if (code) {
+                  console.info(`Code received from redirect: ${code}`);
+                  this.handleOAuthCode(code);
+                }
+              }
+              return false;
             });
+        } else {
+          Column() {
+            Text($r('app.string.access_token'))
+              .fontSize(14)
+              .height('20%')
+              .width('100%')
+              .fontWeight(FontWeight.Bold)
+              .textAlign(TextAlign.Center);
+
+            Text(this.accessToken)
+              .fontSize(12)
+              .height('30%')
+              .width('100%')
+              .fontColor(Color.Red)
+              .onClick(() => {
+                this.pathStack.pushPath({
+                  name: 'CaloriesPage',
+                  param: { access_token: this.accessToken } as TokenResponse
+                });
+              });
+          }
+          .height('100%')
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
         }
-        .height('100%')
-        .width('100%')
-        .justifyContent(FlexAlign.Center)
       }
+      .backgroundColor(Color.Blue)
+      .justifyContent(FlexAlign.Center)
+      .height('100%')
+      .width('100%');
     }
-    .height('100%')
-    .width('100%');
+    .hideBackButton(true)
   }
 }

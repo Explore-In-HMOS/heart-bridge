@@ -5,7 +5,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { wearEngine } from '@kit.WearEngine';
 import Constants from '../utils/Constants';
 import { sensor } from '@kit.SensorServiceKit';
-import { abilityAccessCtrl, Permissions } from '@kit.AbilityKit';
+import PermissionsUtil from '../utils/PermissionsUtil';
 
 let appInfo: wearEngine.AppInfo = {
   bundleName: Constants.bundleName,
@@ -17,9 +17,14 @@ let appParam: wearEngine.P2pAppParam = {
   transformLocalAppInfo: false
 }
 
+@Builder
+export function SendToPhoneBuilder() {
+  SendToPhone()
+}
+
 @Entry
 @Component
-struct HeartRateAndAutoSend {
+struct SendToPhone {
   @State heartRate: number = 0;
   @State msgFromWatch: string = '';
   @State receivedLog: string = '';
@@ -33,9 +38,34 @@ struct HeartRateAndAutoSend {
     this.msgFromWatch = decoder.decodeToString(p2pMessage.content);
     promptAction.openToast({ message: this.msgFromWatch, duration: 1000 });
   }
+  private uiContext = this.getUIContext();
+  private realContext = this.uiContext.getHostContext()
 
   aboutToAppear() {
-    this.requestHealthPermission();
+    const INTERVAL = 200000000;
+    PermissionsUtil.requestPermissions([
+      'ohos.permission.READ_HEALTH_DATA'], this.realContext!)
+    sensor.getSensorList((error: BusinessError, data: Array<sensor.Sensor>) => {
+      if (error) {
+        console.error('getSensorList failed');
+      } else {
+        console.info('getSensorList success');
+        for (let i = 0; i < data.length; i++) {
+          console.info(JSON.stringify(data[i]));
+        }
+      }
+    })
+    try {
+      sensor.on(sensor.SensorId.HEART_RATE, (data: sensor.HeartRateResponse) => {
+        this.heartRate = data.heartRate
+      }, { interval: INTERVAL });
+      setTimeout(() => {
+        sensor.off(sensor.SensorId.HEART_RATE);
+      }, 500);
+    } catch (error) {
+      let e: BusinessError = error as BusinessError;
+      console.error(`Failed to invoke on. Code: ${e.code}, message: ${e.message}`);
+    }
     this.getConnectedDevices();
   }
 
@@ -44,21 +74,7 @@ struct HeartRateAndAutoSend {
       sensor.off(sensor.SensorId.HEART_RATE);
       console.info('Heart rate sensor unsubscribed');
     } catch (err) {
-      console.error('Error while unsubscribing sensor: ' + JSON.stringify(err));
-    }
-  }
-
-  async requestHealthPermission() {
-    const context = getContext(this);
-    const atManager = abilityAccessCtrl.createAtManager();
-    const permissions: Permissions[] = ['ohos.permission.READ_HEALTH_DATA'];
-    try {
-      const result = await atManager.requestPermissionsFromUser(context, permissions);
-      if (result.authResults.every(r => r === 0)) {
-        this.subscribeHeartRateSensor();
-      }
-    } catch (err) {
-      console.error('Permission err: ' + JSON.stringify(err));
+      console.error(`Error while unsubscribing sensor: ${JSON.stringify(err)}`);
     }
   }
 
@@ -120,23 +136,26 @@ struct HeartRateAndAutoSend {
       const p2pResult = await this.p2pClient.sendMessage(this.randomid, appParam, message);
       hilog.info(0, 'WearEngine', 'Message sent: ' + content + ' result: ' + p2pResult.code);
     } catch (err) {
-      console.error('SendMessage Error: ' + JSON.stringify(err));
+      console.error(`SendMessage Error: ${JSON.stringify(err)}`);
     }
   }
 
   build() {
-    Column({ space: 20 }) {
-      Image($r('app.media.heartrate')).width(50).height(50)
-      Text('Heart Rate: ' + this.heartRate + ' bpm')
-        .fontSize(20).fontWeight(FontWeight.Bold).fontColor(Color.Red)
+    NavDestination() {
+      Column({ space: 20 }) {
+        Image($r('app.media.heartrate')).width(50).height(50)
+        Text('Heart Rate: ' + this.heartRate + ' bpm')
+          .fontSize(20).fontWeight(FontWeight.Bold).fontColor(Color.Red)
 
-      Text('From Phone: ' + this.msgFromWatch).fontColor(Color.Gray)
-      Text(this.receivedLog).fontColor(Color.Gray)
+        Text('From Phone: ' + this.msgFromWatch).fontColor(Color.Gray)
+        Text(this.receivedLog).fontColor(Color.Gray)
+      }
+      .justifyContent(FlexAlign.Center)
+      .alignItems(HorizontalAlign.Center)
+      .width('100%')
+      .height('100%')
+      .backgroundColor(Color.Black)
     }
-    .justifyContent(FlexAlign.Center)
-    .alignItems(HorizontalAlign.Center)
-    .width('100%')
-    .height('100%')
-    .backgroundColor(Color.Black)
+    .hideBackButton(true)
   }
 }

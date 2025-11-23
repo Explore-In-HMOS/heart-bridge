@@ -1,7 +1,7 @@
 {
   "module": {
     "name": "application",
-    "type": "feature",
+    "type": "entry",
     "description": "$string:module_desc",
     "mainElement": "HiWearMainAbility",
     "deviceTypes": [
@@ -19,7 +19,31 @@
         "label": "$string:HiWearMainAbility_label",
         "startWindowIcon": "$media:startIcon",
         "startWindowBackground": "$color:start_window_background",
-        "exported": true
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "EntryBackupAbility",
+        "srcEntry": "./ets/hiwearmainability/HiWearMainAbility.ets/",
+        "type": "backup",
+        "exported": false,
+        "metadata": [
+          {
+            "name": "ohos.extension.backup",
+            "resource": "$profile:main_pages"
+          }
+        ],
       }
     ],
     "requestPermissions": [
@@ -43,6 +67,7 @@
         "name": "wearEngineRemoteAppNameList",
         "value": "YOUR_PHONE_APP_BUNDLE_NAME"
       }
-    ]
+    ],
+    "routerMap": "$profile:route_map"
   }
 }

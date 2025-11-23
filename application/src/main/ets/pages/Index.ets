@@ -1,28 +1,29 @@
-import { router } from '@kit.ArkUI'
 import { ButtonComponent } from '../component/ButtonComponent';
 
 @Entry
 @Component
 struct Index {
-  build() {
-    Column() {
-      ButtonComponent({ text: 'Heart Flow' })
-        .padding({ bottom: 5 })
-        .onClick(() => {
-          router.pushUrl({
-            url: 'pages/SendToPhone',
-          });
-        })
+  @Provide('mainStack') pathStack: NavPathStack = new NavPathStack()
 
-      ButtonComponent({ text: 'Authentication' })
-        .onClick(() => {
-          router.pushUrl({
-            url: 'pages/AuthenticationPage'
+  build() {
+    Navigation(this.pathStack) {
+
+      Column() {
+        ButtonComponent({ text: 'Heart Flow' })
+          .padding({ bottom: 5 })
+          .onClick(() => {
+            this.pathStack.pushPathByName('SendToPhone', null)
           })
-        })
+
+        ButtonComponent({ text: 'Authentication' })
+          .onClick(() => {
+            this.pathStack.pushPathByName('AuthenticationPage', null)
+          })
+      }
+      .width('100%')
+      .height('100%')
+      .justifyContent(FlexAlign.Center)
     }
-    .width('100%')
-    .height('100%')
-    .justifyContent(FlexAlign.Center)
+    .hideTitleBar(true)
   }
 }
