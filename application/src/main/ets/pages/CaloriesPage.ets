@@ -11,27 +11,27 @@ export function CaloriesPageBuilder() {
 @Entry
 @Component
 export struct CaloriesPage {
-  @State accessToken: string = '';
+  accessToken: string = '';
   @State caloriesList: number[] = []; // save calories here
   @State timesList: string[] = []; // save start and end times here
   @State isLoading: boolean = true;
   private viewModel = new CaloriesViewModel();
   @Consume('mainStack') pathStack: NavPathStack;
-  @State token: TokenResponse = {
-    access_token: '',
-    expires_in: 0,
-    id_token: '',
-    refresh_token: '',
+  token: TokenResponse = {
+    accessToken: '',
+    expiresIn: 0,
+    idToken: '',
+    refreshToken: '',
     scope: '',
-    token_type: ''
+    tokenType: ''
   }
 
   aboutToAppear(): void {
     this.token = this.pathStack.getParamByName('CaloriesPage')[0] as TokenResponse
 
     if (this.token) {
-      console.info('Received token:', this.token.access_token);
-      this.viewModel.getCalories(this.token.access_token)
+      console.info('Received token:', this.token.accessToken);
+      this.viewModel.getCalories(this.token.accessToken)
         .then((result: CalorieDataResult) => {
           this.caloriesList = result.calories;
           this.timesList = result.times;

@@ -1,6 +1,6 @@
 import { http } from '@kit.NetworkKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { auth_url } from '../utils/APIConstants';
+import { authUrl } from '../utils/APIConstants';
 import taskpool from '@ohos.taskpool';
 import { TokenResponse } from '../model/TokenResponse';
 import { processRespTask } from '../utils/processRespTask';
@@ -59,14 +59,14 @@ export class AuthenticationViewModel {
 
     return new Promise((resolve, reject) => {
       httpRequest.request(
-        auth_url,
+        authUrl,
         {
           method: http.RequestMethod.POST,
           header: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
           },
           extraData: body,
-          expectDataType: http.HttpDataType.STRING,
+          expectDataType: http.HttpDataType.STRING
         },
         async (err: BusinessError, data) => {
           let task = new taskpool.Task(processRespTask, [err, data]);
@@ -86,9 +86,9 @@ export class AuthenticationViewModel {
             parsed = data.result as TokenResponse;
           }
 
-          if (parsed && parsed.access_token && parsed.refresh_token) {
-            this.saveTokens(parsed.access_token, parsed.refresh_token);
-            resolve(parsed.access_token);
+          if (parsed && parsed.accessToken && parsed.refreshToken) {
+            this.saveTokens(parsed.accessToken, parsed.refreshToken);
+            resolve(parsed.accessToken);
           } else {
             console.error('Token parse error or missing fields:', parsed);
             resolve(null);

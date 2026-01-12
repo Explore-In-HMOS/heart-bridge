@@ -1,7 +1,6 @@
 import { util } from '@kit.ArkTS';
 import promptAction from '@ohos.promptAction';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { hilog } from '@kit.PerformanceAnalysisKit';
 import { wearEngine } from '@kit.WearEngine';
 import Constants from '../utils/Constants';
 import { sensor } from '@kit.SensorServiceKit';
@@ -27,7 +26,7 @@ export function SendToPhoneBuilder() {
 struct SendToPhone {
   @State heartRate: number = 0;
   @State msgFromWatch: string = '';
-  @State receivedLog: string = '';
+  receivedLog: string = '';
   deviceClient: wearEngine.DeviceClient = wearEngine.getDeviceClient(this.getUIContext().getHostContext());
   p2pClient: wearEngine.P2pClient = wearEngine.getP2pClient(this.getUIContext().getHostContext());
   context = this.getUIContext().getHostContext();
@@ -131,10 +130,9 @@ struct SendToPhone {
       return;
     }
     const textEncoder = new util.TextEncoder();
-    const message: wearEngine.P2pMessage = { content: textEncoder.encode(content) };
+    const message: wearEngine.P2pMessage = { content: textEncoder.encodeInto(content) };
     try {
       const p2pResult = await this.p2pClient.sendMessage(this.randomid, appParam, message);
-      hilog.info(0, 'WearEngine', 'Message sent: ' + content + ' result: ' + p2pResult.code);
     } catch (err) {
       console.error(`SendMessage Error: ${JSON.stringify(err)}`);
     }
@@ -144,10 +142,11 @@ struct SendToPhone {
     NavDestination() {
       Column({ space: 20 }) {
         Image($r('app.media.heartrate')).width(50).height(50)
-        Text('Heart Rate: ' + this.heartRate + ' bpm')
+        Text(`Heart Rate: ${this.heartRate} bpm`)
           .fontSize(20).fontWeight(FontWeight.Bold).fontColor(Color.Red)
 
-        Text('From Phone: ' + this.msgFromWatch).fontColor(Color.Gray)
+        Text(`From Phone: ${this.msgFromWatch}`)
+          .fontColor(Color.Gray)
         Text(this.receivedLog).fontColor(Color.Gray)
       }
       .justifyContent(FlexAlign.Center)

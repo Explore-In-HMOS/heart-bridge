@@ -63,18 +63,27 @@ export class CaloriesViewModel {
               set.samplePoints.forEach((point: SamplePoint) => {
                 point.value.forEach((v: CalorieValue) => {
                   if (v.fieldName === 'calories') {
+                    const formatter = new Intl.DateTimeFormat(undefined, {
+                      dateStyle: 'short',
+                      timeStyle: 'medium'
+                    });
+
                     const startMillis = this.nanoToMillis(point.startTime);
                     const endMillis = this.nanoToMillis(point.endTime);
 
-                    const startDate = new Date(startMillis);
-                    const endDate = new Date(endMillis);
+                    const startDateStr = formatter.format(startMillis);
+                    const endDateStr = formatter.format(endMillis);
 
                     calories.push(v.floatValue);
-                    times.push(startDate.toLocaleString());
-                    times.push(endDate.toLocaleString());
+                    times.push(startDateStr);
+                    times.push(endDateStr);
+
                     let task = new taskpool.Task(processRespTask, [err, data]);
                     taskpool.execute(task);
-                    console.info(`Calories: ${v.floatValue} startTime: ${startDate.toLocaleString()} endTime: ${endDate.toLocaleString()} `);
+
+                    console.info(
+                      `Calories: ${v.floatValue} startTime: ${startDateStr} endTime: ${endDateStr}`
+                    );
                   }
                 });
               });

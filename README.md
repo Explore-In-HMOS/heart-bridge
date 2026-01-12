@@ -6,9 +6,9 @@ This app demonstrates an application that runs with **HarmonyOS Next** wearable 
 # Preview
 
 <div>
-   <img src="./screenshots/HomeOutput.png" width="25%"/>
-   <img src="./screenshots/CaloriesOutput.png" width="25%"/>
-   <img src="./screenshots/HeartRateOutput.png" width="25%"/>
+<img src="./screenshots/HomeOutput.png" width="25%"/>
+<img src="./screenshots/CaloriesOutput.png" width="25%"/>
+<img src="./screenshots/HeartRateOutput.png" width="25%"/>
 </div>
 
 # Use Cases

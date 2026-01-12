@@ -43,11 +43,11 @@ struct AuthenticationPage {
 
   build() {
     NavDestination() {
-
       Column() {
-
         if (this.shouldShowWebView) {
           Web({ src: Constants.AUTH_URL, controller: this.controller })
+            .fileAccess(true)
+            .geolocationAccess(false)
             .width('100%')
             .height('100%')
             .onLoadIntercept((event) => {
@@ -79,7 +79,7 @@ struct AuthenticationPage {
               .onClick(() => {
                 this.pathStack.pushPath({
                   name: 'CaloriesPage',
-                  param: { access_token: this.accessToken } as TokenResponse
+                  param: { accessToken: this.accessToken } as TokenResponse
                 });
               });
           }
